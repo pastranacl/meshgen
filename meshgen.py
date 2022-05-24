@@ -16,7 +16,10 @@ def afsr_cgal_lib():
         Returns the getmesh function that calls CGAL and freemem to free the memory of 
         the 1D array after being used
     """
-    lib_name = os.path.join(os.getcwd(), 'meshgen.so') 
+    LIB_FOLDER = 'clib'
+    LIB_NAME = 'meshgen.so'
+    FULL_LIB_NAME =  LIB_FOLDER + '/' + LIB_NAME
+    lib_name = os.path.join(os.getcwd(), FULL_LIB_NAME) 
     cesgal_so = cdll.LoadLibrary(lib_name)
     
     getmesh = cesgal_so.get_mesh 
