@@ -19,8 +19,8 @@ def afsr_cgal_lib():
     
     LIB_FOLDER = 'clib'
     LIB_NAME = 'meshgen.so'
-    lib_name = os.path.join(os.path.join(os.path.dirname(__file__),LIB_FOLDER), LIB_NAME)
-    cesgal_so = cdll.LoadLibrary(lib_name)
+    lib_path = os.path.join(os.path.join(os.path.dirname(__file__),LIB_FOLDER), LIB_NAME)
+    cesgal_so = cdll.LoadLibrary(lib_path)
     
     getmesh = cesgal_so.get_mesh 
     freemem = cesgal_so.free_ivector
