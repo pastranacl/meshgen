@@ -90,12 +90,11 @@ def plot_tri(r, tri):
     y=r[:,1]
     z=r[:,2]
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
-
+    ax = plt.axes(projection='3d')
     ax.plot_trisurf(x, y, z, triangles=tri, 
                     color=(0.5,0.5,0.5,1.0), 
                     edgecolor=(0.0,0.0,0.0, 1.0),
-                    linewidth=0.1,
+                    linewidth=0.5,
                     antialiased=True,
                     shade=False)
     plt.show()
@@ -106,7 +105,6 @@ if __name__ == '__main__':
     r = np.loadtxt("init_coords.dat", delimiter="\t")
     tri, n_tri = gentrimesh(r)
     plot_tri(r, tri)
-    print(len(tri))
     
     
     

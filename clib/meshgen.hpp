@@ -53,6 +53,7 @@ struct Perimeter {
 
 extern "C" int *get_mesh(double *rvec, int np, int *ntrip);
 std::vector<Facet> meshgen(std::vector<Point_3> r);
+void orient_mesh(std::vector<Point_3> const &rarr, std::vector<Facet> &facets, int n_tri);
 
 int *ivector(int M);
 extern "C" void free_ivector(int *v);

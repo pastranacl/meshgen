@@ -25,7 +25,7 @@
 
 extern "C" int *get_mesh(double *rvec, int np, int *ntrip)
 {
-    // 1. Convert from 1D array to 2D array of coordinates for CGAL
+    // 1. Convert from 1D array to 2D array of coordinates for CGAL +++++++
     std::vector<Point_3> rarr(np);
     for(int i=0; i<np; i++) {
         double x,y,z;
@@ -35,47 +35,22 @@ extern "C" int *get_mesh(double *rvec, int np, int *ntrip)
         rarr[i] = Point_3(x,y,z);
     }
     
-
-    //-------------------------------------------------------------
+    //--------------------------------------------------------------------
     
-    // 2. Triangulation +++++++++++++++++++++++++++++++++++++++++++
+    // 2. Triangulation ++++++++++++++++++++++++++++++++++++++++++++++++++
     std::vector<Facet> facets;
     facets = meshgen(rarr);
     int n_tri = facets.size();
     
+    //--------------------------------------------------------------------
     
-    //-------------------------------------------------------------
+    // 3. Check if the volume is positive and correct it +++++++++++++++++
+    orient_mesh(rarr, facets, n_tri);
     
-    // 3. Check if the volume is positive and correct it ++++++++++++++
-    // 3.1 Calculate the volume
-    
-    double V = 0;
-    #pragma omp parallel for reduction(+:V)
-    for(int t = 0; t< n_tri; t++) {
-        int v1,v2,v3;
-        v1 = facets[t][0];
-        v2 = facets[t][1];
-        v3 = facets[t][2];
-        V += ( rarr[v1].x()*( rarr[v2].y()*rarr[v3].z() - rarr[v3].y()*rarr[v2].z() ) + 
-               rarr[v2].x()*( rarr[v3].y()*rarr[v1].z() - rarr[v1].y()*rarr[v3].z() ) + 
-               rarr[v3].x()*( rarr[v1].y()*rarr[v2].z() - rarr[v2].y()*rarr[v1].z() ) );
-    }
-    V /= 6;
-    
-    // 3.2 Reorient the normal vectors to have positive volumes
-    if(V<0){
-        #pragma omp parallel for
-        for(int t=0; t < n_tri; t++) {
-            facets[t][1] = facets[t][1] + facets[t][2];
-            facets[t][2] = facets[t][1] - facets[t][2];
-            facets[t][1] = facets[t][1] - facets[t][2];
-        }
-    }
-    
-    //-------------------------------------------------------------
+    //--------------------------------------------------------------------
 
-    // 4.  Converts 2D array triangulation to 1D array +++++++++++++++++++
     
+    // 4.  Converts 2D array triangulation to 1D array +++++++++++++++++++
     int *tri;
     tri = ivector(3*n_tri);
     for(int t=0; t<n_tri; t++) {
@@ -83,7 +58,7 @@ extern "C" int *get_mesh(double *rvec, int np, int *ntrip)
         tri[t*3 + 1] = facets[t][1];
         tri[t*3 + 2] = facets[t][2];
     }
-    //----------------------------------------------------------------
+    //---------------------------------------------------------------------
     
     *ntrip = n_tri;
     
@@ -109,6 +84,39 @@ std::vector<Facet> meshgen(std::vector<Point_3> r)
     return facets;
 }
 
+
+
+/**********************************************************************/
+/*                           orient_mesh                              */
+/* Calculate the volume of the mesh and change the triangles in order */                                                                 
+/* to have positive volumes.                                          */
+/**********************************************************************/
+void orient_mesh(std::vector<Point_3> const &rarr, std::vector<Facet> &facets, int n_tri)
+{
+    // Calculate the volume
+    double V = 0;
+    #pragma omp parallel for reduction(+:V)
+    for(int t = 0; t< n_tri; t++) {
+        int v1,v2,v3;
+        v1 = facets[t][0];
+        v2 = facets[t][1];
+        v3 = facets[t][2];
+        V += ( rarr[v1].x()*( rarr[v2].y()*rarr[v3].z() - rarr[v3].y()*rarr[v2].z() ) + 
+               rarr[v2].x()*( rarr[v3].y()*rarr[v1].z() - rarr[v1].y()*rarr[v3].z() ) + 
+               rarr[v3].x()*( rarr[v1].y()*rarr[v2].z() - rarr[v2].y()*rarr[v1].z() ) );
+    }
+    V /= 6.0;
+    
+    // Reorient the normal vectors to have positive volumes
+    if(V<0){
+        #pragma omp parallel for
+        for(int t=0; t < n_tri; t++) {
+            facets[t][1] = facets[t][1] + facets[t][2];
+            facets[t][2] = facets[t][1] - facets[t][2];
+            facets[t][1] = facets[t][1] - facets[t][2];
+        }
+    }
+}
 
 
 /**********************************************************************/
