@@ -103,7 +103,7 @@ def plot_tri(r, tri):
 
 if __name__ == '__main__':
     """
-        Example of usage, loading of coordinate afrom file
+        Example of usage, loading of coordinates from file
     """
     r = np.loadtxt("init_coords.dat", delimiter="\t")
     tri, n_tri = gentrimesh(r)

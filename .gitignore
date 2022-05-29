@@ -1,8 +1,6 @@
 init_coords.dat
 
-
 clib/comp.sh
-
-
+clib/*.o
 
 __pycache__/*
