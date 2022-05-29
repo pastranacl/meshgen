@@ -9,7 +9,8 @@ This Python module uses Ctypes to wrap the Advancing Front Surface Reconstructio
 Import the module, for instance via `from meshgen import gentrimesh`. Then, for a set of *N* points defining the surface and organised as a numpy array `r` of *N*x3 (with *x, y* and *z* in columns), the triangulation is obtained as:
 
 ```
-tri, n_tri = gentrimesh(r)```
+tri, n_tri = gentrimesh(r)
+```
 
 Here `tri` is an `int` array of `n_tri`x3, where the three columns indicate the indices in `r` defining a triangle.
 
