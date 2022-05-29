@@ -1,6 +1,6 @@
 """
  This module uses ctypes to wrap the CGAL function Advancing Front Surface reconstruction
- into Python.
+ into Python. Returns an oriented triangulation from a set of points.
  
  Cesar L. Pastrana, 2022
 """
@@ -102,6 +102,9 @@ def plot_tri(r, tri):
     
 
 if __name__ == '__main__':
+    """
+        Example of usage, loading of coordinate afrom file
+    """
     r = np.loadtxt("init_coords.dat", delimiter="\t")
     tri, n_tri = gentrimesh(r)
     plot_tri(r, tri)
