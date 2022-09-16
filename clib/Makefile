@@ -20,7 +20,7 @@ all: meshgen
 
 meshgen: meshgen.o
 	@echo -n " - Linking... "
-	@${CC}  meshgen.o ${LINKERFLAG} -o ${COMP_FNAME}
+	@${CC}  meshgen.o ${LINKERFLAG} ${LIBS} -o ${COMP_FNAME}
 	@echo "Done"
 
 meshgen.o: ${SRCS}
