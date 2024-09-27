@@ -1,6 +1,7 @@
 # Meshgen
 
 Meshgen is Python module using Ctypes to wrap the Advancing Front Surface Reconstruction algorithm (AFSR) from the C++-based library [CGAL](https://doc.cgal.org/latest/Advancing_front_surface_reconstruction/index.html). AFSR permits to obtain a triangulated surface from a 3D set of points as a Numpy array. The algorithm is valid for both convex and non-convex surfaces, as well as for open and closed surfaces. Importantly, the resulting triangulation is oriented.
+
 Cesar L. Pastrana, 2022
 
 

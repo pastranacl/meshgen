@@ -26,34 +26,6 @@ import numpy as np
 from ctypes import cdll, c_double, c_int, POINTER
 
 
-def afsr_cgal_lib():
-    """
-        Loads the C library.
-        Returns the getmesh function that calls CGAL and freemem to free the memory of 
-        the 1D array after being used
-    """
-    
-    LIB_FOLDER = 'clib'
-    LIB_NAME = 'meshgen.so'
-    lib_path = os.path.join(os.path.join(os.path.dirname(__file__),LIB_FOLDER), LIB_NAME)
-    cesgal_so = cdll.LoadLibrary(lib_path)
-    
-    getmesh = cesgal_so.get_mesh 
-    freemem = cesgal_so.free_ivector
-    
-    # (ndpointer permits pass/return by reference)
-    getmesh.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
-                        c_int,
-                        np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS')]
-    
-    getmesh.restype = POINTER(c_int)
- 
- 
-    freemem.argtypes = [POINTER(c_int)]
-    freemem.restype = None
-    
-    return getmesh, freemem
-
 
 
 def gentrimesh(r):
@@ -66,7 +38,37 @@ def gentrimesh(r):
         Output: tri    = n_tri x 3 numpy array with the triangulation (int)
                 n_tri  = Total number of triangles 
     """
-    getmesh, freemem = afsr_cgal_lib()
+
+    def _afsr_cgal_lib():
+        """
+            Loads the C library.
+            Returns the getmesh function that calls CGAL and freemem to free the memory of
+            the 1D array after being used
+        """
+
+        LIB_FOLDER = 'clib'
+        LIB_NAME = 'meshgen.so'
+        lib_path = os.path.join(os.path.join(os.path.dirname(__file__),LIB_FOLDER), LIB_NAME)
+        cesgal_so = cdll.LoadLibrary(lib_path)
+
+        getmesh = cesgal_so.get_mesh
+        freemem = cesgal_so.free_ivector
+
+        # (ndpointer permits pass/return by reference)
+        getmesh.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+                            c_int,
+                            np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS')]
+
+        getmesh.restype = POINTER(c_int)
+
+
+        freemem.argtypes = [POINTER(c_int)]
+        freemem.restype = None
+
+        return getmesh, freemem
+
+
+    getmesh, freemem = _afsr_cgal_lib()
    
     # Converts to 1D array
     nvertices = len(r)
