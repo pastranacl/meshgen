@@ -70,21 +70,26 @@ def gentrimesh(r):
 
     getmesh, freemem = _afsr_cgal_lib()
    
-    # Converts to 1D array
+    # Transform the coordinates in 2D to a 1D array (a requirement for the C-library)
     nvertices = len(r)
-    rflat = np.reshape(r, (nvertices*3) )
+    rflat = np.reshape(r, (3*nvertices) )
     
     # Call the C++ library and retrieve mesh and n_tri
     n_trip = np.zeros((1,), dtype=np.int32)
     triflat = getmesh(rflat, nvertices, n_trip)
     n_tri = n_trip[0]
     
-    # Converts 1D tri to 2D numpy array
+
+    # Convert the triangulated 1D array to 2D numpy array ++++
+    # i. First the 1d triflat array is converted to a numpy array
+    triflat_np = np.ctypeslib.as_array(triflat, shape=(3*n_tri,))
+
+    # ii. Reshape tri from 1D -> 2D (np.reshape not working)
     tri = np.zeros((n_tri,3), dtype=int)
-    for i in range(0,n_tri):
-        tri[i,0] = triflat[i*3+0]
-        tri[i,1] = triflat[i*3+1]
-        tri[i,2] = triflat[i*3+2]
+    tri[:,0] = triflat_np[0::3]
+    tri[:,1] = triflat_np[1::3]
+    tri[:,2] = triflat_np[2::3]
+
 
     # Free memory
     freemem(triflat)
