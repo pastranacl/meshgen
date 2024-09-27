@@ -121,7 +121,16 @@ if __name__ == '__main__':
     """
         Example of usage, loading of coordinates from file
     """
-    r = np.loadtxt("init_coords.dat", delimiter="\t")
+
+    shapes = {
+                "sphere": "./examples/sphere.dat",
+                "torus": "./examples/torus.dat",
+                "spherocylinder": "./examples/spherocylinder.dat",
+                "icosahedron": "./examples/icosahedron.dat"
+            }
+
+    r = np.loadtxt(shapes['icosahedron'], delimiter="\t")
+
     tri, n_tri = gentrimesh(r)
     plot_tri(r, tri)
     
