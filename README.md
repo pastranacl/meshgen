@@ -14,10 +14,10 @@ The C++ libary is included as a Linux-based pre-compiled shared libary `meshgen.
 It is necessary, both for compilation and execution of the module, to have CGAL and its dependencies installed on the system.
 
 
-## Function calling and Execution
+## Usage and Execution
 First import the module, for instance via `from meshgen import gentrimesh`.
 
-For a set of $N$ points defining the surface and organised as a numpy array `r` of $N\times 3 (with $x, y$ and $z$ in columns), the triangulation is obtained as:
+For a set of $N$ points defining the surface and organised as a numpy array `r` of $N\times 3$ (with $x, y$ and $z$ in columns), the triangulation is obtained as:
 
 ```
 tri, n_tri = gentrimesh(r)
@@ -25,7 +25,7 @@ tri, n_tri = gentrimesh(r)
 
 Here `tri` is an `int` array of `n_tri`x3, where the three columns indicate the indices in `r` defining a triangle. Example files for different shapes are provided, and the main function of the module shows the usage.
 
-The AFSR takes benefict of OMP parallelisation. Then, it is convenient to specify in the terminal the desired number of threads to use: `export OMP_NUM_THREADS=12` will use 12 threads.
+The AFSR takes benefict of OMP parallelisation. Then, it is convenient to specify in the terminal the desired number of threads to use. In Linux sytem the command `export OMP_NUM_THREADS=12` will set to use 12 threads.
 
 
 
